@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse available properties from Almond Properties. Find homes, condos, and land in the Pacific Northwest.">
+    <title>Property Listings | Almond Properties</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Almond Properties</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="listings.html" class="active">Listings</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>Property Listings</h1>
+                <p>Find your perfect home in the Pacific Northwest</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="filters">
+                    <form class="filters-form" id="filters-form">
+                        <div class="filter-group">
+                            <label for="filter-status">Status</label>
+                            <select id="filter-status">
+                                <option value="">All</option>
+                                <option value="active">For Sale</option>
+                                <option value="pending">Pending</option>
+                                <option value="sold">Sold</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-type">Property Type</label>
+                            <select id="filter-type">
+                                <option value="">All Types</option>
+                                <option value="house">House</option>
+                                <option value="condo">Condo</option>
+                                <option value="townhouse">Townhouse</option>
+                                <option value="land">Land</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-min-price">Min Price</label>
+                            <select id="filter-min-price">
+                                <option value="">No Min</option>
+                                <option value="100000">$100,000</option>
+                                <option value="200000">$200,000</option>
+                                <option value="300000">$300,000</option>
+                                <option value="400000">$400,000</option>
+                                <option value="500000">$500,000</option>
+                                <option value="750000">$750,000</option>
+                                <option value="1000000">$1,000,000</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-max-price">Max Price</label>
+                            <select id="filter-max-price">
+                                <option value="">No Max</option>
+                                <option value="200000">$200,000</option>
+                                <option value="300000">$300,000</option>
+                                <option value="400000">$400,000</option>
+                                <option value="500000">$500,000</option>
+                                <option value="750000">$750,000</option>
+                                <option value="1000000">$1,000,000</option>
+                                <option value="1500000">$1,500,000</option>
+                                <option value="2000000">$2,000,000+</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filter-beds">Bedrooms</label>
+                            <select id="filter-beds">
+                                <option value="">Any</option>
+                                <option value="1">1+</option>
+                                <option value="2">2+</option>
+                                <option value="3">3+</option>
+                                <option value="4">4+</option>
+                                <option value="5">5+</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="listings-count" class="mb-2"></div>
+
+                <div id="all-listings" class="listings-grid">
+                    <div class="loading">Loading listings...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Almond Properties</h3>
+                    <p>Your trusted partner in Pacific Northwest real estate since 2003.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="listings.html">Listings</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p>Pacific Northwest<br>
+                    <a href="mailto:info@almondproperties.com">info@almondproperties.com</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="year"></span> Almond Properties. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/listings.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

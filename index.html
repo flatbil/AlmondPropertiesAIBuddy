@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Almond Properties - Your trusted real estate partner in the Pacific Northwest. Find your dream home today.">
+    <title>Almond Properties | Pacific Northwest Real Estate</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Almond Properties</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="listings.html">Listings</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content container">
+                <h1>Find Your Perfect Home</h1>
+                <p>Trusted real estate services in the Pacific Northwest for over 20 years</p>
+                <a href="listings.html" class="btn btn-primary">View Listings</a>
+                <a href="contact.html" class="btn btn-secondary">Contact Us</a>
+            </div>
+        </section>
+
+        <section class="featured-listings section">
+            <div class="container">
+                <h2 class="section-title">Featured Properties</h2>
+                <div id="featured-listings" class="listings-grid">
+                    <!-- Listings loaded via JavaScript -->
+                </div>
+                <div class="text-center">
+                    <a href="listings.html" class="btn btn-outline">View All Listings</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="services section bg-light">
+            <div class="container">
+                <h2 class="section-title">Our Services</h2>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">🏡</div>
+                        <h3>Buying</h3>
+                        <p>We help you find the perfect home that fits your needs and budget.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">💰</div>
+                        <h3>Selling</h3>
+                        <p>Get top dollar for your property with our proven marketing strategies.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">📋</div>
+                        <h3>Property Management</h3>
+                        <p>Professional management services for your investment properties.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta section">
+            <div class="container text-center">
+                <h2>Ready to Make a Move?</h2>
+                <p>Contact us today for a free consultation</p>
+                <a href="contact.html" class="btn btn-primary">Get in Touch</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Almond Properties</h3>
+                    <p>Your trusted partner in Pacific Northwest real estate since 2003.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="listings.html">Listings</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p>Pacific Northwest<br>
+                    <a href="mailto:info@almondproperties.com">info@almondproperties.com</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="year"></span> Almond Properties. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/listings.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

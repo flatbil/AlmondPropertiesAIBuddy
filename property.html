@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Property details - Almond Properties">
+    <title>Property Details | Almond Properties</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🏠</span>
+                <span class="logo-text">Almond Properties</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="listings.html">Listings</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="property-detail">
+        <div id="property-content">
+            <div class="loading" style="padding: 8rem 2rem;">Loading property details...</div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Almond Properties</h3>
+                    <p>Your trusted partner in Pacific Northwest real estate since 2003.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="listings.html">Listings</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p>Pacific Northwest<br>
+                    <a href="mailto:info@almondproperties.com">info@almondproperties.com</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="year"></span> Almond Properties. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Format price as currency
+        function formatPrice(price) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Format number with commas
+        function formatNumber(num) {
+            return new Intl.NumberFormat('en-US').format(num);
+        }
+
+        // Get status label
+        function getStatusLabel(status) {
+            const labels = {
+                'active': 'For Sale',
+                'pending': 'Pending',
+                'sold': 'Sold'
+            };
+            return labels[status] || status;
+        }
+
+        // Load property details
+        async function loadProperty() {
+            const params = new URLSearchParams(window.location.search);
+            const propertyId = params.get('id');
+
+            if (!propertyId) {
+                showError('No property ID specified');
+                return;
+            }
+
+            try {
+                const response = await fetch('data/listings.json');
+                const data = await response.json();
+                const property = data.listings.find(l => l.id === propertyId);
+
+                if (!property) {
+                    showError('Property not found');
+                    return;
+                }
+
+                renderProperty(property);
+                document.title = `${property.title} | Almond Properties`;
+
+            } catch (error) {
+                console.error('Error loading property:', error);
+                showError('Failed to load property details');
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('property-content').innerHTML = `
+                <div class="container" style="padding: 8rem 2rem; text-align: center;">
+                    <h2>${message}</h2>
+                    <p class="mt-2"><a href="listings.html" class="btn btn-primary">View All Listings</a></p>
+                </div>
+            `;
+        }
+
+        function renderProperty(property) {
+            const statusClass = property.status === 'sold' ? 'sold' : property.status === 'pending' ? 'pending' : '';
+            const imageUrl = property.images && property.images[0] ? property.images[0] : 'images/placeholder.jpg';
+
+            const featuresHtml = property.features
+                ? property.features.map(f => `<li>✓ ${f}</li>`).join('')
+                : '';
+
+            document.getElementById('property-content').innerHTML = `
+                <div class="property-gallery">
+                    <img src="${imageUrl}" alt="${property.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22 viewBox=%220 0 800 400%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22800%22 height=%22400%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2224%22 x=%22400%22 y=%22200%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image Available%3C/text%3E%3C/svg%3E'">
+                </div>
+
+                <section class="property-info section">
+                    <div class="container">
+                        <div class="property-info-grid">
+                            <div class="property-main">
+                                <span class="property-status ${statusClass}" style="display: inline-block; margin-bottom: 1rem;">${getStatusLabel(property.status)}</span>
+                                <h1>${property.title}</h1>
+                                <p class="property-address">${property.address}, ${property.city}, ${property.state} ${property.zip}</p>
+                                <div class="property-price">${formatPrice(property.price)}</div>
+
+                                <div class="property-specs">
+                                    <div class="spec-item">
+                                        <span class="spec-label">Bedrooms</span>
+                                        <span class="spec-value">${property.bedrooms}</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Bathrooms</span>
+                                        <span class="spec-value">${property.bathrooms}</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Square Feet</span>
+                                        <span class="spec-value">${formatNumber(property.sqft)}</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Lot Size</span>
+                                        <span class="spec-value">${property.lotSize || 'N/A'}</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Year Built</span>
+                                        <span class="spec-value">${property.yearBuilt || 'N/A'}</span>
+                                    </div>
+                                    <div class="spec-item">
+                                        <span class="spec-label">Property Type</span>
+                                        <span class="spec-value">${property.type.charAt(0).toUpperCase() + property.type.slice(1)}</span>
+                                    </div>
+                                </div>
+
+                                <div class="property-description mt-2">
+                                    <h3>Description</h3>
+                                    <p>${property.description}</p>
+                                </div>
+
+                                ${featuresHtml ? `
+                                <div class="property-features-list mt-2">
+                                    <h3>Features</h3>
+                                    <ul style="columns: 2; list-style: none; padding: 0;">
+                                        ${featuresHtml}
+                                    </ul>
+                                </div>
+                                ` : ''}
+                            </div>
+
+                            <div class="contact-sidebar">
+                                <h3>Interested in this property?</h3>
+                                <p style="margin-bottom: 1.5rem; color: var(--text-light);">Contact us to schedule a viewing or get more information.</p>
+
+                                <form id="inquiry-form" name="property-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+                                    <input type="hidden" name="form-name" value="property-inquiry">
+                                    <input type="hidden" name="property" value="${property.title} - ${property.address}">
+
+                                    <p class="ohnohoney">
+                                        <label>Don't fill this out: <input name="bot-field"></label>
+                                    </p>
+
+                                    <div class="form-group">
+                                        <label for="inquiry-name">Your Name *</label>
+                                        <input type="text" id="inquiry-name" name="name" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inquiry-email">Email *</label>
+                                        <input type="email" id="inquiry-email" name="email" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inquiry-phone">Phone</label>
+                                        <input type="tel" id="inquiry-phone" name="phone">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inquiry-message">Message</label>
+                                        <textarea id="inquiry-message" name="message" rows="4">I'm interested in this property and would like more information.</textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary" style="width: 100%;">Send Inquiry</button>
+                                </form>
+
+                                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                                    <p style="margin-bottom: 0.5rem;"><strong>Or contact us directly:</strong></p>
+                                    <p><a href="mailto:info@almondproperties.com">info@almondproperties.com</a></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+                            <a href="listings.html" class="btn btn-outline">← Back to Listings</a>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadProperty);
+    </script>
+</body>
+</html>

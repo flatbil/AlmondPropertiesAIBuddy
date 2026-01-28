@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Almond Properties</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="admin-header">
+        <div class="container">
+            <div class="admin-header-content">
+                <h1>🏠 Almond Properties Admin</h1>
+                <a href="../index.html" class="btn btn-outline">View Site</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="container">
+            <div class="admin-actions">
+                <h2>Manage Listings</h2>
+                <button class="btn btn-primary" onclick="showAddForm()">+ Add New Listing</button>
+            </div>
+
+            <!-- Add/Edit Form (hidden by default) -->
+            <div id="listing-form-container" class="admin-form-container" style="display: none;">
+                <div class="admin-form-header">
+                    <h3 id="form-title">Add New Listing</h3>
+                    <button class="btn-close" onclick="hideForm()">×</button>
+                </div>
+                <form id="listing-form" class="admin-form">
+                    <input type="hidden" id="listing-id">
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="title">Property Title *</label>
+                            <input type="text" id="title" required placeholder="e.g., Charming Craftsman Home">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price *</label>
+                            <input type="number" id="price" required placeholder="e.g., 450000">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="address">Street Address *</label>
+                            <input type="text" id="address" required placeholder="e.g., 123 Oak Street">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" required placeholder="e.g., Seattle">
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State *</label>
+                            <input type="text" id="state" required value="WA" placeholder="e.g., WA">
+                        </div>
+                        <div class="form-group">
+                            <label for="zip">ZIP Code *</label>
+                            <input type="text" id="zip" required placeholder="e.g., 98101">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="status">Status *</label>
+                            <select id="status" required>
+                                <option value="active">For Sale</option>
+                                <option value="pending">Pending</option>
+                                <option value="sold">Sold</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Property Type *</label>
+                            <select id="type" required>
+                                <option value="house">House</option>
+                                <option value="condo">Condo</option>
+                                <option value="townhouse">Townhouse</option>
+                                <option value="land">Land</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="featured">Featured?</label>
+                            <select id="featured">
+                                <option value="false">No</option>
+                                <option value="true">Yes - Show on Homepage</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bedrooms">Bedrooms *</label>
+                            <input type="number" id="bedrooms" required min="0" placeholder="e.g., 3">
+                        </div>
+                        <div class="form-group">
+                            <label for="bathrooms">Bathrooms *</label>
+                            <input type="number" id="bathrooms" required min="0" step="0.5" placeholder="e.g., 2">
+                        </div>
+                        <div class="form-group">
+                            <label for="sqft">Square Feet *</label>
+                            <input type="number" id="sqft" required min="0" placeholder="e.g., 1850">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="lotSize">Lot Size</label>
+                            <input type="text" id="lotSize" placeholder="e.g., 0.25 acres">
+                        </div>
+                        <div class="form-group">
+                            <label for="yearBuilt">Year Built</label>
+                            <input type="number" id="yearBuilt" min="1800" max="2030" placeholder="e.g., 2005">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea id="description" rows="4" required placeholder="Describe the property features, condition, and highlights..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="features">Features (comma-separated)</label>
+                        <input type="text" id="features" placeholder="e.g., Hardwood Floors, Fireplace, Updated Kitchen, Garage">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="images">Image URL</label>
+                        <input type="text" id="images" placeholder="e.g., images/property-1.jpg">
+                        <small>Enter relative path to image file (e.g., images/property-1.jpg)</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-outline" onclick="hideForm()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Listing</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Listings Table -->
+            <div class="admin-table-container">
+                <table class="admin-table" id="listings-table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Location</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Featured</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listings-tbody">
+                        <tr>
+                            <td colspan="6" class="loading">Loading listings...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Export Section -->
+            <div class="admin-export">
+                <h3>Export Listings</h3>
+                <p>Download the listings data as JSON to update your site.</p>
+                <button class="btn btn-primary" onclick="exportListings()">Download listings.json</button>
+                <p class="admin-note">
+                    <strong>How to update your site:</strong><br>
+                    1. Make your changes above<br>
+                    2. Click "Download listings.json"<br>
+                    3. Replace the file at <code>data/listings.json</code> with the downloaded file<br>
+                    4. Commit and push the changes to deploy
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let listings = [];
+
+        // Load listings on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadListings();
+            renderTable();
+        });
+
+        // Load listings from JSON or localStorage
+        async function loadListings() {
+            // First check localStorage for saved changes
+            const saved = localStorage.getItem('almondListings');
+            if (saved) {
+                listings = JSON.parse(saved);
+                return;
+            }
+
+            // Otherwise load from file
+            try {
+                const response = await fetch('../data/listings.json');
+                const data = await response.json();
+                listings = data.listings || [];
+                // Save to localStorage
+                localStorage.setItem('almondListings', JSON.stringify(listings));
+            } catch (error) {
+                console.error('Error loading listings:', error);
+                listings = [];
+            }
+        }
+
+        // Save listings to localStorage
+        function saveListings() {
+            localStorage.setItem('almondListings', JSON.stringify(listings));
+        }
+
+        // Format price
+        function formatPrice(price) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0
+            }).format(price);
+        }
+
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById('listings-tbody');
+
+            if (listings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="no-results">No listings yet. Click "Add New Listing" to get started.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = listings.map(listing => `
+                <tr>
+                    <td>
+                        <strong>${listing.title}</strong><br>
+                        <small>${listing.bedrooms} bed, ${listing.bathrooms} bath, ${listing.sqft.toLocaleString()} sqft</small>
+                    </td>
+                    <td>${listing.city}, ${listing.state}</td>
+                    <td>${formatPrice(listing.price)}</td>
+                    <td><span class="status-badge status-${listing.status}">${listing.status}</span></td>
+                    <td>${listing.featured ? '⭐' : '-'}</td>
+                    <td class="actions">
+                        <button class="btn-action btn-edit" onclick="editListing('${listing.id}')">Edit</button>
+                        <button class="btn-action btn-delete" onclick="deleteListing('${listing.id}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Show add form
+        function showAddForm() {
+            document.getElementById('form-title').textContent = 'Add New Listing';
+            document.getElementById('listing-form').reset();
+            document.getElementById('listing-id').value = '';
+            document.getElementById('state').value = 'WA';
+            document.getElementById('listing-form-container').style.display = 'block';
+            document.getElementById('title').focus();
+        }
+
+        // Hide form
+        function hideForm() {
+            document.getElementById('listing-form-container').style.display = 'none';
+        }
+
+        // Edit listing
+        function editListing(id) {
+            const listing = listings.find(l => l.id === id);
+            if (!listing) return;
+
+            document.getElementById('form-title').textContent = 'Edit Listing';
+            document.getElementById('listing-id').value = listing.id;
+            document.getElementById('title').value = listing.title;
+            document.getElementById('price').value = listing.price;
+            document.getElementById('address').value = listing.address;
+            document.getElementById('city').value = listing.city;
+            document.getElementById('state').value = listing.state;
+            document.getElementById('zip').value = listing.zip;
+            document.getElementById('status').value = listing.status;
+            document.getElementById('type').value = listing.type;
+            document.getElementById('featured').value = listing.featured ? 'true' : 'false';
+            document.getElementById('bedrooms').value = listing.bedrooms;
+            document.getElementById('bathrooms').value = listing.bathrooms;
+            document.getElementById('sqft').value = listing.sqft;
+            document.getElementById('lotSize').value = listing.lotSize || '';
+            document.getElementById('yearBuilt').value = listing.yearBuilt || '';
+            document.getElementById('description').value = listing.description;
+            document.getElementById('features').value = listing.features ? listing.features.join(', ') : '';
+            document.getElementById('images').value = listing.images ? listing.images[0] : '';
+
+            document.getElementById('listing-form-container').style.display = 'block';
+            document.getElementById('title').focus();
+        }
+
+        // Delete listing
+        function deleteListing(id) {
+            if (!confirm('Are you sure you want to delete this listing?')) return;
+
+            listings = listings.filter(l => l.id !== id);
+            saveListings();
+            renderTable();
+        }
+
+        // Handle form submission
+        document.getElementById('listing-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('listing-id').value || Date.now().toString();
+            const featuresInput = document.getElementById('features').value;
+            const imagesInput = document.getElementById('images').value;
+
+            const listing = {
+                id: id,
+                title: document.getElementById('title').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                zip: document.getElementById('zip').value,
+                price: parseInt(document.getElementById('price').value),
+                status: document.getElementById('status').value,
+                type: document.getElementById('type').value,
+                bedrooms: parseInt(document.getElementById('bedrooms').value),
+                bathrooms: parseFloat(document.getElementById('bathrooms').value),
+                sqft: parseInt(document.getElementById('sqft').value),
+                lotSize: document.getElementById('lotSize').value || null,
+                yearBuilt: document.getElementById('yearBuilt').value ? parseInt(document.getElementById('yearBuilt').value) : null,
+                description: document.getElementById('description').value,
+                features: featuresInput ? featuresInput.split(',').map(f => f.trim()).filter(f => f) : [],
+                images: imagesInput ? [imagesInput.trim()] : [],
+                featured: document.getElementById('featured').value === 'true',
+                dateAdded: new Date().toISOString().split('T')[0]
+            };
+
+            // Update or add
+            const existingIndex = listings.findIndex(l => l.id === id);
+            if (existingIndex >= 0) {
+                listing.dateAdded = listings[existingIndex].dateAdded; // Preserve original date
+                listings[existingIndex] = listing;
+            } else {
+                listings.push(listing);
+            }
+
+            saveListings();
+            renderTable();
+            hideForm();
+        });
+
+        // Export listings as JSON
+        function exportListings() {
+            const data = {
+                listings: listings
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'listings.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Reset to original data (from file)
+        async function resetToOriginal() {
+            if (!confirm('This will discard all your changes and reload the original listings. Continue?')) return;
+
+            localStorage.removeItem('almondListings');
+            try {
+                const response = await fetch('../data/listings.json');
+                const data = await response.json();
+                listings = data.listings || [];
+                localStorage.setItem('almondListings', JSON.stringify(listings));
+                renderTable();
+            } catch (error) {
+                console.error('Error resetting:', error);
+            }
+        }
+    </script>
+</body>
+</html>
