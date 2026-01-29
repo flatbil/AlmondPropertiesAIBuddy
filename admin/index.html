@@ -19,7 +19,8 @@
             <h1>🏠 Almond Properties</h1>
             <h2>Admin Login</h2>
             <p>Please log in to manage listings.</p>
-            <button class="btn btn-primary" onclick="netlifyIdentity.open('login')">Log In</button>
+            <button class="btn btn-primary" id="login-btn">Log In</button>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-light);" id="login-status"></p>
         </div>
     </div>
 
@@ -431,25 +432,53 @@ images/property-1-3.jpg"></textarea>
         }
 
         // Initialize Netlify Identity
-        netlifyIdentity.on('init', user => {
-            if (user) {
-                showAdmin(user);
-            } else {
-                showLogin();
+        document.getElementById('login-btn').addEventListener('click', function() {
+            const status = document.getElementById('login-status');
+            if (typeof netlifyIdentity === 'undefined') {
+                status.textContent = 'Error: Identity widget not loaded. Check your internet connection.';
+                status.style.color = '#c62828';
+                return;
+            }
+            status.textContent = 'Opening login...';
+            try {
+                netlifyIdentity.open('login');
+            } catch (e) {
+                status.textContent = 'Error: ' + e.message;
+                status.style.color = '#c62828';
+                console.error('Identity error:', e);
             }
         });
 
-        netlifyIdentity.on('login', user => {
-            showAdmin(user);
-            netlifyIdentity.close();
-        });
+        if (typeof netlifyIdentity !== 'undefined') {
+            netlifyIdentity.on('init', user => {
+                if (user) {
+                    showAdmin(user);
+                } else {
+                    showLogin();
+                }
+            });
 
-        netlifyIdentity.on('logout', () => {
-            showLogin();
-        });
+            netlifyIdentity.on('login', user => {
+                showAdmin(user);
+                netlifyIdentity.close();
+            });
 
-        // Initialize
-        netlifyIdentity.init();
+            netlifyIdentity.on('logout', () => {
+                showLogin();
+            });
+
+            netlifyIdentity.on('error', err => {
+                console.error('Netlify Identity Error:', err);
+                document.getElementById('login-status').textContent = 'Login error. Make sure Identity is enabled in Netlify.';
+                document.getElementById('login-status').style.color = '#c62828';
+            });
+
+            // Initialize
+            netlifyIdentity.init();
+        } else {
+            document.getElementById('login-status').textContent = 'Identity widget failed to load.';
+            document.getElementById('login-status').style.color = '#c62828';
+        }
     </script>
     </div><!-- End admin-content -->
 </body>
