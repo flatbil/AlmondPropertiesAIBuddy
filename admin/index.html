@@ -45,6 +45,10 @@
                             <label for="price">Price *</label>
                             <input type="number" id="price" required placeholder="e.g., 450000">
                         </div>
+                        <div class="form-group">
+                            <label for="mlsNumber">MLS Number</label>
+                            <input type="text" id="mlsNumber" placeholder="e.g., 2345678">
+                        </div>
                     </div>
 
                     <div class="form-row">
@@ -241,6 +245,7 @@
                     <td>
                         <strong>${listing.title}</strong><br>
                         <small>${listing.bedrooms} bed, ${listing.bathrooms} bath, ${listing.sqft.toLocaleString()} sqft</small>
+                        ${listing.mlsNumber ? `<br><small style="color: var(--primary-color);">MLS# ${listing.mlsNumber}</small>` : ''}
                     </td>
                     <td>${listing.city}, ${listing.state}</td>
                     <td>${formatPrice(listing.price)}</td>
@@ -278,6 +283,7 @@
             document.getElementById('listing-id').value = listing.id;
             document.getElementById('title').value = listing.title;
             document.getElementById('price').value = listing.price;
+            document.getElementById('mlsNumber').value = listing.mlsNumber || '';
             document.getElementById('address').value = listing.address;
             document.getElementById('city').value = listing.city;
             document.getElementById('state').value = listing.state;
@@ -315,9 +321,12 @@
             const featuresInput = document.getElementById('features').value;
             const imagesInput = document.getElementById('images').value;
 
+            const mlsInput = document.getElementById('mlsNumber').value.trim();
+
             const listing = {
                 id: id,
                 title: document.getElementById('title').value,
+                mlsNumber: mlsInput || null,
                 address: document.getElementById('address').value,
                 city: document.getElementById('city').value,
                 state: document.getElementById('state').value,

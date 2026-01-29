@@ -29,6 +29,7 @@ function getStatusLabel(status) {
 function createPropertyCard(listing) {
     const statusClass = listing.status === 'sold' ? 'sold' : listing.status === 'pending' ? 'pending' : '';
     const imageUrl = listing.images && listing.images[0] ? listing.images[0] : 'images/placeholder.jpg';
+    const mlsHtml = listing.mlsNumber ? `<span class="property-mls">MLS# ${listing.mlsNumber}</span>` : '';
 
     return `
         <article class="property-card" onclick="viewProperty('${listing.id}')">
@@ -37,7 +38,7 @@ function createPropertyCard(listing) {
                 <span class="property-status ${statusClass}">${getStatusLabel(listing.status)}</span>
             </div>
             <div class="property-content">
-                <div class="property-price">${formatPrice(listing.price)}</div>
+                <div class="property-price">${formatPrice(listing.price)}${mlsHtml}</div>
                 <h3 class="property-title">${listing.title}</h3>
                 <p class="property-address">${listing.address}, ${listing.city}, ${listing.state} ${listing.zip}</p>
                 <div class="property-features">
