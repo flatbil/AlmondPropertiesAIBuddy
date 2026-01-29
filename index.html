@@ -138,10 +138,25 @@
                     });
                 }
             });
-            // Check for invite/recovery tokens in URL and open widget
-            if (window.location.hash.includes('invite_token') ||
-                window.location.hash.includes('confirmation_token') ||
-                window.location.hash.includes('recovery_token')) {
+
+            window.netlifyIdentity.on('signup', () => {
+                document.location.href = '/admin/';
+            });
+
+            // Initialize and handle tokens
+            window.netlifyIdentity.init({
+                APIUrl: 'https://almondproperties.netlify.app/.netlify/identity'
+            });
+
+            // Check for any Identity tokens in URL hash and open widget
+            const hash = window.location.hash;
+            if (hash && (
+                hash.includes('invite_token') ||
+                hash.includes('confirmation_token') ||
+                hash.includes('recovery_token') ||
+                hash.includes('access_token')
+            )) {
+                console.log('Identity token detected:', hash.substring(0, 50) + '...');
                 window.netlifyIdentity.open();
             }
         }
