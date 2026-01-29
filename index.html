@@ -10,6 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Netlify Identity Widget - handles invite/confirmation tokens -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
     <header class="header">
@@ -126,6 +128,23 @@
                 initFeaturedCarousel();
             }
         });
+
+        // Handle Netlify Identity redirects (invite/confirmation tokens)
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on('init', user => {
+                if (!user) {
+                    window.netlifyIdentity.on('login', () => {
+                        document.location.href = '/admin/';
+                    });
+                }
+            });
+            // Check for invite/recovery tokens in URL and open widget
+            if (window.location.hash.includes('invite_token') ||
+                window.location.hash.includes('confirmation_token') ||
+                window.location.hash.includes('recovery_token')) {
+                window.netlifyIdentity.open();
+            }
+        }
     </script>
 </body>
 </html>
