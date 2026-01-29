@@ -6,6 +6,7 @@
     <meta name="description" content="Property details - Almond Properties">
     <title>Property Details | Almond Properties</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/gallery.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -65,6 +66,7 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/carousel.js"></script>
     <script>
         // Format price as currency
         function formatPrice(price) {
@@ -88,6 +90,18 @@
                 'sold': 'Sold'
             };
             return labels[status] || status;
+        }
+
+        // Create Google Maps embed URL
+        function getMapEmbedUrl(address, city, state, zip) {
+            const fullAddress = encodeURIComponent(`${address}, ${city}, ${state} ${zip}`);
+            return `https://www.google.com/maps?q=${fullAddress}&output=embed`;
+        }
+
+        // Create Walkscore URL
+        function getWalkscoreUrl(address, city, state, zip) {
+            const fullAddress = encodeURIComponent(`${address} ${city} ${state} ${zip}`);
+            return `https://www.walkscore.com/score/${fullAddress}`;
         }
 
         // Load property details
@@ -130,7 +144,6 @@
 
         function renderProperty(property) {
             const statusClass = property.status === 'sold' ? 'sold' : property.status === 'pending' ? 'pending' : '';
-            const imageUrl = property.images && property.images[0] ? property.images[0] : 'images/placeholder.jpg';
 
             const featuresHtml = property.features
                 ? property.features.map(f => `<li>✓ ${f}</li>`).join('')
@@ -143,10 +156,16 @@
                    </div>`
                 : '';
 
+            // Create gallery HTML
+            const galleryHtml = createPropertyGallery(property.images);
+
+            // Create map and walkscore URLs
+            const mapUrl = getMapEmbedUrl(property.address, property.city, property.state, property.zip);
+            const walkscoreUrl = getWalkscoreUrl(property.address, property.city, property.state, property.zip);
+            const fullAddress = `${property.address}, ${property.city}, ${property.state} ${property.zip}`;
+
             document.getElementById('property-content').innerHTML = `
-                <div class="property-gallery">
-                    <img src="${imageUrl}" alt="${property.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22800%22 height=%22400%22 viewBox=%220 0 800 400%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22800%22 height=%22400%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2224%22 x=%22400%22 y=%22200%22 text-anchor=%22middle%22 dy=%22.3em%22%3ENo Image Available%3C/text%3E%3C/svg%3E'">
-                </div>
+                ${galleryHtml}
 
                 <section class="property-info section">
                     <div class="container">
@@ -154,7 +173,7 @@
                             <div class="property-main">
                                 <span class="property-status ${statusClass}" style="display: inline-block; margin-bottom: 1rem;">${getStatusLabel(property.status)}</span>
                                 <h1>${property.title}</h1>
-                                <p class="property-address">${property.address}, ${property.city}, ${property.state} ${property.zip}</p>
+                                <p class="property-address">${fullAddress}</p>
                                 <div class="property-price" style="font-size: 2rem; margin-bottom: 1rem;">${formatPrice(property.price)}</div>
                                 ${mlsHtml}
 
@@ -198,6 +217,34 @@
                                     </ul>
                                 </div>
                                 ` : ''}
+
+                                <!-- Location Section -->
+                                <div class="location-section">
+                                    <h3>Location & Neighborhood</h3>
+                                    <div class="location-grid">
+                                        <div class="map-container">
+                                            <iframe
+                                                src="${mapUrl}"
+                                                allowfullscreen=""
+                                                loading="lazy"
+                                                referrerpolicy="no-referrer-when-downgrade"
+                                                title="Property location map">
+                                            </iframe>
+                                        </div>
+                                        <div class="walkscore-container">
+                                            <h4>Walk Score</h4>
+                                            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 1rem;">
+                                                Check the walkability, transit options, and bike-friendliness of this location.
+                                            </p>
+                                            <a href="${walkscoreUrl}" target="_blank" rel="noopener" class="btn btn-primary">
+                                                View Walk Score
+                                            </a>
+                                            <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-light);">
+                                                Walk Score measures walkability on a scale of 0-100 based on walking routes to nearby amenities.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="contact-sidebar">
@@ -248,6 +295,11 @@
                     </div>
                 </section>
             `;
+
+            // Initialize gallery if multiple images
+            if (property.images && property.images.length > 0) {
+                initPropertyGallery(property.images);
+            }
         }
 
         // Initialize

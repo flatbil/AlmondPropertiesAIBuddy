@@ -6,6 +6,7 @@
     <meta name="description" content="Almond Properties - Your Kitsap Realtor. Over 30 years helping home buyers in Kitsap County, Washington.">
     <title>Almond Properties | Your Kitsap Realtor</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/gallery.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -44,10 +45,10 @@
         <section class="featured-listings section">
             <div class="container">
                 <h2 class="section-title">Featured Properties</h2>
-                <div id="featured-listings" class="listings-grid">
-                    <!-- Listings loaded via JavaScript -->
+                <div id="featured-carousel-container">
+                    <!-- Carousel loaded via JavaScript -->
                 </div>
-                <div class="text-center">
+                <div class="text-center mt-2">
                     <a href="listings.html" class="btn btn-outline">View All Listings</a>
                 </div>
             </div>
@@ -113,6 +114,18 @@
     </footer>
 
     <script src="js/listings.js"></script>
+    <script src="js/carousel.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Initialize featured carousel on homepage
+        document.addEventListener('DOMContentLoaded', async function() {
+            const container = document.getElementById('featured-carousel-container');
+            if (container) {
+                const listings = await loadListings();
+                container.innerHTML = createFeaturedCarousel(listings);
+                initFeaturedCarousel();
+            }
+        });
+    </script>
 </body>
 </html>
