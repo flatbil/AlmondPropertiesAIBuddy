@@ -8,7 +8,7 @@
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://identity.netlify.com https://*.netlify.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; frame-src https://netlify-identity.netlify.app https://*.netlify.com; connect-src 'self' https://*.netlify.com https://identity.netlify.com; form-action 'self' https://formspree.io"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://identity.netlify.com https://*.netlify.com https://upload-widget.cloudinary.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; frame-src https://netlify-identity.netlify.app https://*.netlify.com https://upload-widget.cloudinary.com; connect-src 'self' https://*.netlify.com https://identity.netlify.com https://api.cloudinary.com; form-action 'self' https://formspree.io"
 
 [[redirects]]
   from = "/admin"
