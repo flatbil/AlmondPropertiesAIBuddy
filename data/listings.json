@@ -1,35 +1,6 @@
 {
   "listings": [
     {
-      "id": "2",
-      "title": "Silverdale Family Home",
-      "address": "456 Ridgetop Boulevard",
-      "city": "Silverdale",
-      "state": "WA",
-      "zip": "98383",
-      "price": 485000,
-      "status": "active",
-      "type": "house",
-      "bedrooms": 4,
-      "bathrooms": 2.5,
-      "sqft": 2200,
-      "lotSize": "0.20 acres",
-      "yearBuilt": 2008,
-      "description": "Spacious family home near Silverdale's shopping and dining. Open floor plan with vaulted ceilings, modern kitchen with granite counters, and a large backyard perfect for entertaining. Close to excellent schools.",
-      "features": [
-        "Vaulted Ceilings",
-        "Granite Counters",
-        "Large Backyard",
-        "Near Schools",
-        "2-Car Garage"
-      ],
-      "images": [
-        "images/property-2.jpg"
-      ],
-      "featured": true,
-      "dateAdded": "2024-01-20"
-    },
-    {
       "id": "1770522746812",
       "title": "155 May Street",
       "mlsNumber": "2417550",
