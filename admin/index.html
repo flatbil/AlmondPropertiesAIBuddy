@@ -195,17 +195,19 @@
                 </table>
             </div>
 
-            <!-- Export Section -->
+            <!-- Publish Section -->
             <div class="admin-export">
-                <h3>Export Listings</h3>
-                <p>Download the listings data as JSON to update your site.</p>
-                <button class="btn btn-primary" onclick="exportListings()">Download listings.json</button>
+                <h3>Publish Listings</h3>
+                <p>Push your changes live to the website instantly — no deploy needed.</p>
+                <button class="btn btn-primary" id="publish-btn" onclick="publishToCloudinary()">Publish to Cloudinary</button>
+                <span id="publish-status" style="margin-left: 1rem; font-size: 0.9rem; vertical-align: middle;"></span>
+                <p style="margin-top: 1rem;">
+                    <button class="btn btn-outline" onclick="exportListings()">Download listings.json (backup)</button>
+                </p>
                 <p class="admin-note">
-                    <strong>How to update your site:</strong><br>
-                    1. Make your changes above<br>
-                    2. Click "Download listings.json"<br>
-                    3. Replace the file at <code>data/listings.json</code> with the downloaded file<br>
-                    4. Commit and push the changes to deploy
+                    <strong>First-time setup:</strong> In your Cloudinary dashboard, go to Settings → Upload Presets
+                    and create an unsigned preset named <code>AlmondPropertiesData</code> with
+                    resource type <code>Raw</code> and "Overwrite existing files" enabled.
                 </p>
             </div>
         </div>
@@ -215,9 +217,9 @@
         let listings = [];
 
         // ===== Cloudinary Configuration =====
-        // Update these with your Cloudinary account details
         const CLOUDINARY_CLOUD_NAME = 'dzquymqrl';
-        const CLOUDINARY_UPLOAD_PRESET = 'AlmondPropertiesImages';
+        const CLOUDINARY_UPLOAD_PRESET = 'AlmondPropertiesImages';   // image uploads
+        const CLOUDINARY_RAW_UPLOAD_PRESET = 'AlmondPropertiesData'; // raw/JSON uploads
 
         // Managed images array for the current form
         let currentImages = [];
@@ -343,7 +345,7 @@
 
             // Otherwise load from file
             try {
-                const response = await fetch('../data/listings.json');
+                const response = await fetch('https://res.cloudinary.com/dzquymqrl/raw/upload/almond-properties/listings.json');
                 const data = await response.json();
                 listings = data.listings || [];
                 // Save to localStorage
@@ -519,13 +521,52 @@
             URL.revokeObjectURL(url);
         }
 
+        // Publish listings directly to Cloudinary
+        async function publishToCloudinary() {
+            const btn = document.getElementById('publish-btn');
+            const status = document.getElementById('publish-status');
+
+            btn.disabled = true;
+            status.textContent = 'Publishing...';
+            status.style.color = 'inherit';
+
+            try {
+                const json = JSON.stringify({ listings: listings }, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+
+                const formData = new FormData();
+                formData.append('file', blob, 'listings.json');
+                formData.append('upload_preset', CLOUDINARY_RAW_UPLOAD_PRESET);
+                formData.append('public_id', 'almond-properties/listings.json');
+
+                const response = await fetch(
+                    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,
+                    { method: 'POST', body: formData }
+                );
+
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error?.message || 'Upload failed');
+                }
+
+                status.textContent = '✓ Published! Changes are live.';
+                status.style.color = 'green';
+            } catch (error) {
+                status.textContent = '✗ ' + error.message;
+                status.style.color = '#c62828';
+                console.error('Publish error:', error);
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
         // Reset to original data (from file)
         async function resetToOriginal() {
             if (!confirm('This will discard all your changes and reload the original listings. Continue?')) return;
 
             localStorage.removeItem('almondListings');
             try {
-                const response = await fetch('../data/listings.json');
+                const response = await fetch('https://res.cloudinary.com/dzquymqrl/raw/upload/almond-properties/listings.json');
                 const data = await response.json();
                 listings = data.listings || [];
                 localStorage.setItem('almondListings', JSON.stringify(listings));

@@ -54,7 +54,7 @@ function createPropertyCard(listing) {
 // Load listings from JSON file
 async function loadListings() {
     try {
-        const response = await fetch('data/listings.json');
+        const response = await fetch('https://res.cloudinary.com/dzquymqrl/raw/upload/almond-properties/listings.json');
         if (!response.ok) {
             throw new Error('Failed to load listings');
         }
