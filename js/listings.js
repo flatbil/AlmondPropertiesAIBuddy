@@ -51,21 +51,27 @@ function createPropertyCard(listing) {
     `;
 }
 
-// Load listings from JSON file
+// Load listings — tries Cloudinary first, falls back to local file
 async function loadListings() {
-    try {
-        const response = await fetch('https://res.cloudinary.com/dzquymqrl/raw/upload/almond-properties/listings.json');
-        if (!response.ok) {
-            throw new Error('Failed to load listings');
+    const sources = [
+        'https://res.cloudinary.com/dzquymqrl/raw/upload/almond-properties/listings.json',
+        'data/listings.json'
+    ];
+
+    for (const url of sources) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) continue;
+            const data = await response.json();
+            listingsData = data.listings || [];
+            return listingsData;
+        } catch (error) {
+            console.warn(`Could not load listings from ${url}:`, error);
         }
-        const data = await response.json();
-        listingsData = data.listings || [];
-        return listingsData;
-    } catch (error) {
-        console.error('Error loading listings:', error);
-        // Return empty array if fetch fails
-        return [];
     }
+
+    console.error('All listing sources failed.');
+    return [];
 }
 
 // Filter listings based on criteria
