@@ -13,7 +13,9 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 - **Hosting:** Netlify (free tier)
 - **Authentication:** Netlify Identity
 - **Frontend:** HTML, CSS, JavaScript (no frameworks)
-- **Data:** JSON file (`data/listings.json`)
+- **Data:** JSON hosted on Cloudinary (`data/listings.json` kept as local backup/fallback)
+- **Images:** Cloudinary (cloud name: `dzquymqrl`, folder: `almond-properties`)
+- **Maps:** Leaflet.js + OpenStreetMap (free, no API key required)
 - **Forms:** Netlify Forms with honeypot spam protection
 
 ---
@@ -21,12 +23,13 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 ## Key Features
 - Image carousel for featured properties (auto-rotate, swipe support)
 - Photo gallery with lightbox on listing pages
-- Google Maps embed for each property
+- Interactive map (Leaflet/OpenStreetMap) on each property page
 - Walk Score link for neighborhood info
 - MLS number field with link to NWMLS
 - Responsive design (mobile-friendly)
 - Parallax hero images
 - Secure admin panel with login
+- One-click "Publish to Cloudinary" from admin panel — no deploy needed for listing updates
 
 ---
 
@@ -57,7 +60,7 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 │   ├── listings.js         # Listing functionality
 │   └── carousel.js         # Carousel/gallery code
 ├── data/
-│   └── listings.json       # Property listings data
+│   └── listings.json       # Local backup (Cloudinary is live source)
 ├── images/
 │   ├── logo.png            # Almond Properties logo
 │   ├── nwmls-logo.png      # NWMLS member logo
@@ -71,6 +74,27 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 
 ---
 
+## Cloudinary Configuration
+
+**Cloud name:** `dzquymqrl`
+
+| Preset | Type | Used for |
+|--------|------|----------|
+| `AlmondPropertiesImages` | Unsigned, Image | Property photos |
+| `AlmondPropertiesData` | Unsigned, Raw, Overwrite ON | listings.json |
+
+**Live listings JSON URL:**
+```
+https://res.cloudinary.com/dzquymqrl/raw/upload/listings.json
+```
+
+**Image folder:**
+```
+https://res.cloudinary.com/dzquymqrl/image/upload/almond-properties/
+```
+
+---
+
 ## Admin Panel
 
 **URL:** /admin
@@ -80,16 +104,19 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 1. Go to `yoursite.netlify.app/admin`
 2. Log in with Netlify Identity credentials
 3. Add/edit listings in the form
-4. Click "Download listings.json"
-5. Replace `data/listings.json` in repo
-6. Commit and push to deploy
+4. Click **"Publish to Cloudinary"** — changes go live immediately, no deploy needed
+5. "Download listings.json" is available as a backup option
+
+### How listings data loads (with fallback):
+1. Tries Cloudinary: `https://res.cloudinary.com/dzquymqrl/raw/upload/listings.json`
+2. Falls back to local: `data/listings.json` in the repo
 
 ### Listing Fields:
 - Title, MLS Number, Address, City, State, ZIP
 - Price, Status (active/pending/sold), Property Type
 - Bedrooms, Bathrooms, Square Feet, Lot Size, Year Built
 - Description, Features (comma-separated)
-- Images (one URL per line)
+- Images (uploaded via Cloudinary widget)
 - Featured (show on homepage carousel)
 
 ---
@@ -108,7 +135,7 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 ### Security Headers (in netlify.toml):
 - X-Frame-Options: DENY
 - X-Content-Type-Options: nosniff
-- Content-Security-Policy configured for Identity widget
+- Content-Security-Policy configured for Identity, Cloudinary, Leaflet (unpkg.com), Nominatim
 
 ---
 
@@ -152,15 +179,15 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 
 ## Maintenance Tasks
 
-### Adding Property Photos:
-1. Optimize images (1200x800px, <500KB)
-2. Upload to `images/` folder
-3. Name clearly: `123-main-st-1.jpg`
-4. Reference in listing: `images/123-main-st-1.jpg`
+### Adding/Updating Listings:
+1. Log into admin panel at `/admin`
+2. Add or edit listings using the form
+3. Click **Publish to Cloudinary** — live immediately
 
-### Updating Listings:
-- Use admin panel, or
-- Edit `data/listings.json` directly
+### Adding Property Photos:
+1. Use the "Upload Images" button inside the listing form
+2. Photos go directly to Cloudinary (`almond-properties` folder)
+3. First image becomes the main/thumbnail photo
 
 ### Checking Form Submissions:
 - Netlify dashboard → Forms
@@ -175,6 +202,7 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 | SSL certificate | Free (included) |
 | Netlify Forms | Free (100/month) |
 | Netlify Identity | Free (5 users) |
+| Cloudinary (images + JSON) | Free tier |
 | Domain renewal | ~$12-15/year |
 | **Total** | **~$12-15/year** |
 
@@ -182,16 +210,26 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 
 ## Troubleshooting
 
+### Listings not showing:
+1. Open browser console (F12) and check for fetch errors
+2. Verify Cloudinary URL is accessible: `https://res.cloudinary.com/dzquymqrl/raw/upload/listings.json`
+3. If Cloudinary fails, site falls back to `data/listings.json` automatically
+4. Hard refresh with Ctrl+Shift+R to clear cached JS
+
+### Publish to Cloudinary failing:
+1. Check browser console for error details
+2. Verify `AlmondPropertiesData` preset exists in Cloudinary (unsigned, Raw, Overwrite ON)
+3. Make sure you're logged into the admin panel before publishing
+
+### Map not loading on property page:
+- Uses Leaflet.js + OpenStreetMap (free, no API key)
+- Geocoding via Nominatim — if address doesn't resolve, shows "Map unavailable" gracefully
+
 ### Admin login not working:
 1. Check Identity is enabled in Netlify
 2. Verify `/.netlify/identity/settings` returns JSON
 3. Hard refresh: Ctrl+Shift+R
 4. Check browser console for errors
-
-### Images not loading:
-1. Verify file exists in `images/` folder
-2. Check filename matches exactly (case-sensitive)
-3. Ensure path in listing is correct
 
 ### Forms not submitting:
 1. Check `data-netlify="true"` attribute
@@ -200,6 +238,23 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 
 ---
 
+## Session History
+
+### January 2026 — Initial Build
+- Built full site replacing WordPress
+- Netlify hosting, Identity auth, Forms
+- Admin panel with Cloudinary image upload widget
+
+### February 2026 — Cloudinary & Map Fixes
+- Moved `listings.json` to Cloudinary as live data source
+- `data/listings.json` kept in repo as automatic fallback
+- Added **Publish to Cloudinary** button in admin panel (one-click deploy for listing changes)
+- Replaced broken Google Maps embed with Leaflet.js + OpenStreetMap (free, no API key)
+- Fixed admin panel bug where failed Cloudinary load would cache empty listings in localStorage
+- Updated CSP in `netlify.toml` to allow Leaflet CDN and Nominatim geocoding
+
+---
+
 ## Created
 - **Date:** January 2026
-- **Built with:** Claude Code (Claude Opus 4.5)
+- **Built with:** Claude Code (Claude Opus 4.5 / Sonnet 4.6)
