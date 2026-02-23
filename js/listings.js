@@ -54,7 +54,7 @@ function createPropertyCard(listing) {
 // Load listings — tries Cloudinary first, falls back to local file
 async function loadListings() {
     const sources = [
-        'https://res.cloudinary.com/dzquymqrl/raw/upload/almond-properties/listings.json',
+        'https://res.cloudinary.com/dzquymqrl/raw/upload/listings.json',
         'data/listings.json'
     ];
 
