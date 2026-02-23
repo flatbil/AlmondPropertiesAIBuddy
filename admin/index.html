@@ -334,26 +334,43 @@
             renderTable();
         });
 
-        // Load listings from JSON or localStorage
+        // Load listings from localStorage, then Cloudinary, then local fallback
         async function loadListings() {
             // First check localStorage for saved changes
             const saved = localStorage.getItem('almondListings');
             if (saved) {
-                listings = JSON.parse(saved);
-                return;
+                const parsed = JSON.parse(saved);
+                if (parsed.length > 0) {
+                    listings = parsed;
+                    return;
+                }
+                // Don't trust an empty localStorage — could be a failed load
+                localStorage.removeItem('almondListings');
             }
 
-            // Otherwise load from file
-            try {
-                const response = await fetch('https://res.cloudinary.com/dzquymqrl/raw/upload/almond-properties/listings.json');
-                const data = await response.json();
-                listings = data.listings || [];
-                // Save to localStorage
-                localStorage.setItem('almondListings', JSON.stringify(listings));
-            } catch (error) {
-                console.error('Error loading listings:', error);
-                listings = [];
+            // Try sources in order
+            const sources = [
+                'https://res.cloudinary.com/dzquymqrl/raw/upload/almond-properties/listings.json',
+                '../data/listings.json'
+            ];
+
+            for (const url of sources) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) continue;
+                    const data = await response.json();
+                    if (data.listings && data.listings.length > 0) {
+                        listings = data.listings;
+                        localStorage.setItem('almondListings', JSON.stringify(listings));
+                        return;
+                    }
+                } catch (e) {
+                    console.warn(`Could not load from ${url}:`, e);
+                }
             }
+
+            console.error('All listing sources failed or returned empty data.');
+            listings = [];
         }
 
         // Save listings to localStorage
@@ -562,20 +579,13 @@
             }
         }
 
-        // Reset to original data (from file)
+        // Reset to original data (from Cloudinary or local fallback)
         async function resetToOriginal() {
             if (!confirm('This will discard all your changes and reload the original listings. Continue?')) return;
 
             localStorage.removeItem('almondListings');
-            try {
-                const response = await fetch('https://res.cloudinary.com/dzquymqrl/raw/upload/almond-properties/listings.json');
-                const data = await response.json();
-                listings = data.listings || [];
-                localStorage.setItem('almondListings', JSON.stringify(listings));
-                renderTable();
-            } catch (error) {
-                console.error('Error resetting:', error);
-            }
+            await loadListings();
+            renderTable();
         }
 
         // ===== Netlify Identity Authentication =====
