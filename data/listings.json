@@ -60,6 +60,31 @@
       ],
       "featured": true,
       "dateAdded": "2026-02-08"
+    },
+    {
+      "id": "1781664309849",
+      "title": "1490 NE Hudson Ave",
+      "mlsNumber": "2516522",
+      "address": "1490 NE Hudson Ave",
+      "city": "Poulsbo",
+      "state": "WA",
+      "zip": "98370",
+      "price": 2250000,
+      "status": "active",
+      "type": "house",
+      "bedrooms": 4,
+      "bathrooms": 4,
+      "sqft": 4906,
+      "lotSize": "169,013",
+      "yearBuilt": 1918,
+      "description": "Imagine arriving home by way of enchanting, tree-lined Scenic Drive, beneath a towering canopy of Douglas firs, hemlocks, maples, and alders. As the forest opens, breathtaking views of Hood Canal unfold before you. Nestled within this extraordinary setting is a custom resort-style Craftsman home, thoughtfully designed to embrace the natural beauty of the Pacific Northwest. Enormous kitchen with farmer sink and a huge butcher-block island is the heart of the home. The great room's shiny hardwood flooring and expansive windows lead to inviting outdoor living spaces such as the concrete sand-finish deck and inviting hot tub. The property offers a private park-like setting complete with 4 RV hookups, providing ample space for guests, family gatherings, retreats, or recreational adventures. An inviting fire pit creates the perfect gathering place to relax under the stars, share stories with friends, and enjoy the peaceful surroundings. Wildlife enthusiasts will appreciate bald eagles, Canadian geese and ospreys soaring and gliding across the landscape. As evening approaches, settle in and experience unforgettable sunsets as the sky transforms into brilliant shades of gold, orange, pink, and purple over Olympics. Offering stunning natural beauty, and resort-style amenities, this remarkable Hood Canal estate is more than a home—it's a destination, a retreat, and a lifestyle.",
+      "features": [],
+      "images": [
+        "https://res.cloudinary.com/dzquymqrl/image/upload/v1781664303/almond-properties/dekytldeep8zfzrru27z.jpg",
+        "https://res.cloudinary.com/dzquymqrl/image/upload/v1781664304/almond-properties/wxzux111a2ppzxbhbgaa.jpg"
+      ],
+      "featured": true,
+      "dateAdded": "2026-06-17"
     }
   ]
 }
