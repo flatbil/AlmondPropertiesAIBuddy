@@ -350,7 +350,7 @@
 
             // Try sources in order
             const sources = [
-                'https://res.cloudinary.com/dzquymqrl/raw/upload/listings.json',
+                `https://res.cloudinary.com/dzquymqrl/raw/upload/listings_live.json?_=${Date.now()}`,
                 '../data/listings.json'
             ];
 
@@ -554,7 +554,7 @@
                 const formData = new FormData();
                 formData.append('file', blob, 'listings.json');
                 formData.append('upload_preset', CLOUDINARY_RAW_UPLOAD_PRESET);
-                formData.append('public_id', 'listings');
+                formData.append('public_id', 'listings_live');
 
                 const response = await fetch(
                     `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`,

@@ -54,7 +54,7 @@ function createPropertyCard(listing) {
 // Load listings — tries Cloudinary first, falls back to local file
 async function loadListings() {
     const sources = [
-        `https://res.cloudinary.com/dzquymqrl/raw/upload/listings.json?_=${Date.now()}`,
+        `https://res.cloudinary.com/dzquymqrl/raw/upload/listings_live.json?_=${Date.now()}`,
         'data/listings.json'
     ];
 
