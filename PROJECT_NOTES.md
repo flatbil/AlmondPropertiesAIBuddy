@@ -3,9 +3,9 @@
 ## Overview
 Rebuilt real estate website for Almond Properties, replacing old WordPress site with a modern, secure static site.
 
-**Live Site:** https://almondproperties.netlify.app
+**Live Site:** https://almondproperties.com (Netlify-hosted; almondproperties.netlify.app also resolves)
 **GitHub Repo:** https://github.com/flatbil/AlmondPropertiesAIBuddy
-**Domain:** almondproperties.com (not yet connected)
+**Domain:** almondproperties.com (connected and live)
 
 ---
 
@@ -13,7 +13,7 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 - **Hosting:** Netlify (free tier)
 - **Authentication:** Netlify Identity
 - **Frontend:** HTML, CSS, JavaScript (no frameworks)
-- **Data:** JSON hosted on Cloudinary (`data/listings.json` kept as local backup/fallback)
+- **Data:** JSON lives in the repo (`data/listings.json`) — served directly, no external host
 - **Images:** Cloudinary (cloud name: `dzquymqrl`, folder: `almond-properties`)
 - **Maps:** Leaflet.js + OpenStreetMap (free, no API key required)
 - **Forms:** Netlify Forms with honeypot spam protection
@@ -29,7 +29,7 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 - Responsive design (mobile-friendly)
 - Parallax hero images
 - Secure admin panel with login
-- One-click "Publish to Cloudinary" from admin panel — no deploy needed for listing updates
+- Admin panel edits/uploads images to Cloudinary directly; publishing listing changes is a download + commit (see Admin Panel below)
 
 ---
 
@@ -60,11 +60,13 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 │   ├── listings.js         # Listing functionality
 │   └── carousel.js         # Carousel/gallery code
 ├── data/
-│   └── listings.json       # Local backup (Cloudinary is live source)
+│   └── listings.json       # Live data source, served directly (no external host)
 ├── images/
 │   ├── logo.png            # Almond Properties logo
 │   ├── nwmls-logo.png      # NWMLS member logo
-│   └── realtor-equal-housing.jpg  # Realtor & Equal Housing logos
+│   ├── realtor-equal-housing.jpg  # Realtor & Equal Housing logos
+│   ├── favicon.ico, favicon-16/32/192.png  # Favicon (cropped "A" mark from logo.png)
+│   └── apple-touch-icon.png
 ├── admin/
 │   ├── index.html          # Admin panel (protected)
 │   └── admin.css           # Admin styles
@@ -81,12 +83,10 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 | Preset | Type | Used for |
 |--------|------|----------|
 | `AlmondPropertiesImages` | Unsigned, Image | Property photos |
-| `AlmondPropertiesData` | Unsigned, Raw, Overwrite ON | listings.json |
 
-**Live listings JSON URL:**
-```
-https://res.cloudinary.com/dzquymqrl/raw/upload/listings.json
-```
+Listings JSON is **not** hosted on Cloudinary anymore (see Session History — Feb 2026 entry
+for why) — the `AlmondPropertiesData` raw preset and the old `listings_live.json` file on
+Cloudinary are unused/retired. `data/listings.json` in the repo is the live source.
 
 **Image folder:**
 ```
@@ -101,15 +101,16 @@ https://res.cloudinary.com/dzquymqrl/image/upload/almond-properties/
 **Authentication:** Netlify Identity
 
 ### To Add/Edit Listings:
-1. Go to `yoursite.netlify.app/admin`
+1. Go to `almondproperties.com/admin`
 2. Log in with Netlify Identity credentials
-3. Add/edit listings in the form
-4. Click **"Publish to Cloudinary"** — changes go live immediately, no deploy needed
-5. "Download listings.json" is available as a backup option
+3. Add/edit listings in the form (edits are saved to the browser's localStorage as you go)
+4. Click **"Download listings.json"**
+5. Replace `data/listings.json` in the repo with the downloaded file, then commit and push
+   — Netlify auto-deploys on push, so that's what actually takes it live
 
-### How listings data loads (with fallback):
-1. Tries Cloudinary: `https://res.cloudinary.com/dzquymqrl/raw/upload/listings.json`
-2. Falls back to local: `data/listings.json` in the repo
+### How listings data loads:
+The site fetches `data/listings.json` directly from the repo — that's the only source.
+(An earlier version tried a Cloudinary-hosted copy first; dropped in Feb 2026, see Session History.)
 
 ### Listing Fields:
 - Title, MLS Number, Address, City, State, ZIP
@@ -182,7 +183,7 @@ https://res.cloudinary.com/dzquymqrl/image/upload/almond-properties/
 ### Adding/Updating Listings:
 1. Log into admin panel at `/admin`
 2. Add or edit listings using the form
-3. Click **Publish to Cloudinary** — live immediately
+3. Click **Download listings.json**, replace `data/listings.json` in the repo, commit and push
 
 ### Adding Property Photos:
 1. Use the "Upload Images" button inside the listing form
@@ -202,7 +203,7 @@ https://res.cloudinary.com/dzquymqrl/image/upload/almond-properties/
 | SSL certificate | Free (included) |
 | Netlify Forms | Free (100/month) |
 | Netlify Identity | Free (5 users) |
-| Cloudinary (images + JSON) | Free tier |
+| Cloudinary (image hosting) | Free tier |
 | Domain renewal | ~$12-15/year |
 | **Total** | **~$12-15/year** |
 
@@ -211,15 +212,14 @@ https://res.cloudinary.com/dzquymqrl/image/upload/almond-properties/
 ## Troubleshooting
 
 ### Listings not showing:
-1. Open browser console (F12) and check for fetch errors
-2. Verify Cloudinary URL is accessible: `https://res.cloudinary.com/dzquymqrl/raw/upload/listings.json`
-3. If Cloudinary fails, site falls back to `data/listings.json` automatically
-4. Hard refresh with Ctrl+Shift+R to clear cached JS
+1. Open browser console (F12) and check for fetch errors on `data/listings.json`
+2. Confirm the deploy actually included your latest `data/listings.json` (check the commit in Netlify's deploy log)
+3. Hard refresh with Ctrl+Shift+R to clear cached JS
 
-### Publish to Cloudinary failing:
-1. Check browser console for error details
-2. Verify `AlmondPropertiesData` preset exists in Cloudinary (unsigned, Raw, Overwrite ON)
-3. Make sure you're logged into the admin panel before publishing
+### Changes made in admin panel aren't showing on the live site:
+This is expected until you finish the manual step — the admin panel only saves to the
+browser's localStorage and generates a download. Download **listings.json**, replace
+`data/listings.json` in the repo, then commit and push so Netlify deploys it.
 
 ### Map not loading on property page:
 - Uses Leaflet.js + OpenStreetMap (free, no API key)
@@ -252,6 +252,13 @@ https://res.cloudinary.com/dzquymqrl/image/upload/almond-properties/
 - Replaced broken Google Maps embed with Leaflet.js + OpenStreetMap (free, no API key)
 - Fixed admin panel bug where failed Cloudinary load would cache empty listings in localStorage
 - Updated CSP in `netlify.toml` to allow Leaflet CDN and Nominatim geocoding
+
+### September 2026 — Domain Live, Cleanup Pass
+- Confirmed `almondproperties.com` is connected and serving via Netlify (was previously listed as "not yet connected" in these notes — stale)
+- Removed the dead "Publish to Cloudinary" button/flow from the admin panel — it uploaded to a `listings_live.json` on Cloudinary that the site hasn't read since the Feb 2026 revert to `data/listings.json`, so it silently did nothing useful. Admin panel now just downloads `listings.json`, with notes on the manual replace/commit/push step
+- Added a proper favicon (cropped from the "A" mark in `images/logo.png`) — `images/favicon.ico`, `favicon-16/32/192.png`, `apple-touch-icon.png`, wired into every page's `<head>`
+- Fixed stale comments in `js/listings.js` and `admin/index.html` that still described the old Cloudinary-first data-loading flow
+- Updated this file throughout to match current reality (data flow, admin instructions, troubleshooting)
 
 ---
 

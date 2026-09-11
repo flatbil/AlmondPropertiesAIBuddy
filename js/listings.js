@@ -51,7 +51,10 @@ function createPropertyCard(listing) {
     `;
 }
 
-// Load listings — tries Cloudinary first, falls back to local file
+// Load listings from the repo's local data file.
+// (Previously tried a Cloudinary-hosted copy first; that path caused stale/overwrite
+// issues and was dropped in favor of serving straight from data/listings.json — see
+// PROJECT_NOTES.md "Session History".)
 async function loadListings() {
     const sources = [
         'data/listings.json'
