@@ -62,9 +62,11 @@ Rebuilt real estate website for Almond Properties, replacing old WordPress site 
 ├── data/
 │   └── listings.json       # Live data source, served directly (no external host)
 ├── images/
-│   ├── logo.png            # Almond Properties logo
+│   ├── logo.png            # Almond Properties logo (header, light background)
+│   ├── logo-footer.png     # Same logo, alpha remapped so PROPERTIES stays legible when
+│   │                       #   inverted white on the dark footer (see Session History)
 │   ├── nwmls-logo.png      # NWMLS member logo
-│   ├── realtor-equal-housing.jpg  # Realtor & Equal Housing logos
+│   ├── realtor-equal-housing.png  # Realtor & Equal Housing logos (transparent bg, for footer invert)
 │   ├── favicon.ico, favicon-16/32/192.png  # Favicon (cropped "A" mark from logo.png)
 │   └── apple-touch-icon.png
 ├── admin/
@@ -259,6 +261,11 @@ browser's localStorage and generates a download. Download **listings.json**, rep
 - Added a proper favicon (cropped from the "A" mark in `images/logo.png`) — `images/favicon.ico`, `favicon-16/32/192.png`, `apple-touch-icon.png`, wired into every page's `<head>`
 - Fixed stale comments in `js/listings.js` and `admin/index.html` that still described the old Cloudinary-first data-loading flow
 - Updated this file throughout to match current reality (data flow, admin instructions, troubleshooting)
+- Fixed the footer's white-on-dark logo filter (`brightness(0) invert(1)`) silently blanking out
+  any opaque artwork it touched — it turned the Realtor/Equal Housing JPG into a solid white box
+  (fixed via a transparent PNG) and the "PROPERTIES" wordmark on the main logo into a blank white
+  bar (fixed with `logo-footer.png`, a footer-only copy whose alpha channel is remapped from the
+  original's light/dark contrast so the filter reads it as intended instead of crushing it flat)
 
 ---
 
