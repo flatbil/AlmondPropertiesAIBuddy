@@ -167,10 +167,15 @@
                 ? property.features.map(f => `<li>✓ ${f}</li>`).join('')
                 : '';
 
+            // NWMLS's public site (nwmls.com) runs its search through a
+            // dynamic third-party widget, not a plain per-listing URL — there
+            // is no guessable "/listings/{mlsNumber}" page (confirmed: that
+            // pattern 404s). Link to the general search instead and be
+            // upfront that it's a search, not a direct listing page.
             const mlsHtml = property.mlsNumber
                 ? `<div class="mls-info" style="margin-bottom: 1.5rem; padding: 1rem; background: var(--bg-light); border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
                     <span style="font-weight: 600;">MLS# ${property.mlsNumber}</span>
-                    <a href="https://www.nwmls.com/listings/${property.mlsNumber}" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">View on NWMLS</a>
+                    <a href="https://www.nwmls.com/homes-for-sale/washington" target="_blank" rel="noopener" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">Search MLS# ${property.mlsNumber} on NWMLS</a>
                    </div>`
                 : '';
 
